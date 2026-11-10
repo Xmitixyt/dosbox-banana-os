@@ -1,0 +1,7 @@
+name=dosbox
+title=DOSBox for Banana OS
+version=0.1.0
+type=console
+category=Games
+description=DOS emulator for Banana OS x86_64
+bin=dosbox
