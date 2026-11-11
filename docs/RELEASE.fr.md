@@ -1,14 +1,31 @@
-# DOSBox 0.1.0 pour Banana OS
+# DOSBox 0.1.1 pour Banana OS
 
-Cette première version pour Banana OS **64 bits** réduit les ralentissements de
-Jazz Jackrabbit. Le profil fourni utilise le recompilateur x86 de DOSBox, un
-affichage logiciel plus léger et une sortie audio qui conserve les échantillons
-déjà en attente. Le jeu est fourni séparément par l'utilisateur.
+## Changements depuis la 0.1.0
+
+- `dosbox --version` indique la version du port installée.
+- `dosbox --help` affiche les formats pris en charge et le chemin du profil Jazz livré dans le paquet.
+
+## Corrections apportées depuis le prototype
+
+Ces corrections sont présentes depuis la 0.1.0 et restent incluses dans la 0.1.1.
+
+- **Coupures audio**. DOSBox ralentit la production audio quand la file se remplit et conserve les échantillons en attente. Le profil Jazz utilise une sortie à 48 kHz.
+- **Ralentissements dans Jazz Jackrabbit**. Le profil active le recompilateur x86 (`core=dynamic`) et règle l'émulation sur 9 000 cycles. L'affichage calcule la correspondance des pixels à l'avance et réutilise les lignes identiques.
+- **Écriture des fichiers DOS**. Les écritures se font dans le dossier monté. Un programme `.COM` a créé et écrit un fichier de test sur un disque FAT32.
+
+Sur Banana OS **64 bits** dans QEMU avec WHPX, Jazz a tenu sa cadence nominale d'environ 70 Hz pendant un essai de 30 secondes. Certaines scènes ralentissaient encore avec TCG. [Rapport de validation](https://github.com/Xmitixyt/dosbox-banana-os/blob/v0.1.0/docs/VALIDATION.md)
 
 ## Installation
 
-Copier `dosbox-banana-os-x86_64.bpk` sur une clé FAT32. Dans le terminal de Banana OS,
-installer le paquet et vérifier l'autotest. Démarrer le bureau avec `startx` si nécessaire.
+Dans l'App Store, actualiser la liste puis rechercher DOSBox. Si le dépôt est déjà configuré, la mise à jour peut aussi se faire depuis le terminal.
+
+```sh
+apt update
+apt install dosbox
+dosbox --version
+```
+
+Pour une installation manuelle, copier `dosbox-banana-os-x86_64.bpk` sur une clé FAT32 et installer le paquet. Démarrer le bureau avec `startx` si nécessaire.
 
 ```sh
 pkg install /mnt/usb/dosbox-banana-os-x86_64.bpk
@@ -21,7 +38,7 @@ par exemple `/mnt/virtio`.
 ## Jazz Jackrabbit
 
 1. Copier le dossier du jeu avec `JAZZ.EXE` et ses données sur un disque accessible à Banana OS.
-2. Placer le **nouveau** `jazz.conf` à côté de `JAZZ.EXE`. Remplacer l'ancien profil si tu en utilisais un.
+2. Copier `/apps/dosbox/jazz.conf` à côté de `JAZZ.EXE`. Le profil est aussi disponible dans les fichiers de la release.
 3. Lancer le fichier `.conf` depuis Banana OS.
 
 ```sh
@@ -59,8 +76,4 @@ Lancer ensuite `dosbox /mnt/usb/MONJEU/lancer.conf`. Le clavier utilise les
 positions physiques QWERTY. Cliquer dans la fenêtre pour capturer la souris,
 appuyer sur Échap pour la libérer et fermer la fenêtre pour quitter.
 
-Les essais ont été faits avec Banana OS build-318 dans QEMU. La fluidité dépend
-de la vitesse de l'hôte et de l'accélérateur QEMU. Sur Windows, ajouter
-`-accel whpx` à la commande QEMU si Windows Hypervisor Platform est disponible.
-Cette option a tenu la cadence nominale de Jazz pendant l'essai. Voir les
-résultats et limites dans [le rapport de validation](https://github.com/Xmitixyt/dosbox-banana-os/blob/v0.1.0/docs/VALIDATION.md).
+Sur Windows, ajouter `-accel whpx` à la commande QEMU si Windows Hypervisor Platform est disponible.

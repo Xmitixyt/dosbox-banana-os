@@ -9,6 +9,9 @@ OUT.mkdir(parents=True, exist_ok=True)
 LLVM = pathlib.Path(os.environ.get('LLVM_DIR', 'C:/Program Files/LLVM/bin' if os.name=='nt' else '/usr/bin'))
 CC = str(LLVM / ('clang.exe' if os.name == 'nt' else 'clang'))
 TC = ROOT / 'build/toolchain/usr'
+version = re.search(r'^version=([0-9A-Za-z.+~_-]+)$', (ROOT / 'manifest').read_text(), re.MULTILINE)
+if not version:
+    raise RuntimeError('Missing or invalid version in manifest')
 # GNU's precompiled filebuf embeds a 40-byte pthread mutex. Preserve that
 # C++ object layout while retaining the SDK mutex fields at the front.
 cxx_headers=OUT/'cxx-headers'
@@ -55,6 +58,8 @@ header_key=header_hash.hexdigest()
 def compile_one(src):
     obj = OUT / (str(src.relative_to(ROOT)).replace('\\','_').replace('/','_')+'.o')
     cmd = [CC,*flags,*(cxx if src.suffix=='.cpp' else ['-std=gnu11']),'-c',str(src),'-o',str(obj)]
+    if src == ROOT / 'src/main.c':
+        cmd.append(f'-DDOSBOX_PORT_VERSION="{version[1]}"')
     stamp = obj.with_suffix('.cmd')
     key = repr(cmd)+header_key
     if obj.exists() and stamp.exists() and stamp.read_text()==key and obj.stat().st_mtime>max(src.stat().st_mtime,(ROOT/'include/cxx_compat.h').stat().st_mtime): return obj

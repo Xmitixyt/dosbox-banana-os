@@ -25,11 +25,13 @@ Copier le paquet sur une clé FAT32 et l'installer depuis le terminal de Banana 
 
 ```sh
 pkg install /mnt/usb/dosbox-banana-os-x86_64.bpk
+dosbox --version
 dosbox --selftest
 ```
 
 Le bureau doit être démarré (`startx` si nécessaire). Copier le dossier complet
-de Jazz et placer le nouveau `jazz.conf` fourni à côté de `JAZZ.EXE`.
+de Jazz et placer `/apps/dosbox/jazz.conf` à côté de `JAZZ.EXE`. La commande
+`dosbox --help` rappelle où trouver ce profil.
 
 ```sh
 dosbox /mnt/usb/JAZZ/jazz.conf

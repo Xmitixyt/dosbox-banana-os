@@ -208,10 +208,28 @@ static size_t audio_batch(const int16_t *data,size_t frames) {
 }
 static void audio_sample(int16_t left,int16_t right) {int16_t p[2]={left,right};audio_batch(p,1);}
 
+static void print_usage(FILE *stream) {
+    fputs("Usage: dosbox [--frames N] PATH\n"
+          "  PATH        A DOS .exe, .com, .bat, or DOSBox .conf file\n"
+          "  --help      Show this help\n"
+          "  --version   Show the Banana OS port version\n"
+          "  --selftest  Run the runtime checks\n"
+          "\nJazz Jackrabbit: copy /apps/dosbox/jazz.conf next to JAZZ.EXE,\n"
+          "then run dosbox /path/to/Jazz/jazz.conf.\n", stream);
+}
+
 int main(int argc,char **argv) {
     /* The SDK initializes libc but does not call C++ global constructors. */
     extern void (*__init_array_start[])(void), (*__init_array_end[])(void);
     for(void (**p)(void)=__init_array_start;p<__init_array_end;p++) (*p)();
+    if (argc == 2 && !strcmp(argv[1], "--version")) {
+        puts("DOSBox for Banana OS " DOSBOX_PORT_VERSION);
+        return 0;
+    }
+    if (argc == 2 && !strcmp(argv[1], "--help")) {
+        print_usage(stdout);
+        return 0;
+    }
     if(argc==2 && !strcmp(argv[1],"--selftest")) {
         extern int dosbox_runtime_selftest(void);
         return dosbox_runtime_selftest();
@@ -226,7 +244,7 @@ int main(int argc,char **argv) {
         if(*end || !count || count>1000000) {fprintf(stderr,"Invalid frame limit\n");return 1;}
         frame_limit=(unsigned)count;path=argv[3];
     }
-    if(!path) {fprintf(stderr,"Usage: dosbox [--frames N] /path/game.conf (or .exe, .com, .bat)\n");return 1;}
+    if(!path) {print_usage(stderr);return 1;}
     if(!realpath(path,content)) {perror(path);return 1;}
     struct stat st;
     if(stat(content,&st) || !S_ISREG(st.st_mode)) {fprintf(stderr,"Not a regular file: %s\n",content);return 1;}

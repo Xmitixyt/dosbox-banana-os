@@ -1,4 +1,15 @@
-# Validation de DOSBox 0.1.0
+# Validation de DOSBox pour Banana OS
+
+## Version 0.1.1
+
+Le 11 novembre 2026, une VM QEMU avec WHPX a installé la 0.1.0 puis l'a mise à jour
+vers la 0.1.1. `dosbox --version` a affiché `0.1.1`. `dosbox --help` a indiqué
+le chemin du profil Jazz, qui était présent. L'autotest a réussi et Jazz a terminé
+un essai de démarrage de 300 images émulées sans retard signalé par la boucle.
+
+SHA-256 du paquet 0.1.1 `7c0d965e5e245307faebf32b50d93cc32013d3d56144098a1282a28a3182a239`.
+
+## Version 0.1.0
 
 Essais du 10 novembre 2026 sur Banana OS 0.6 x86_64, image officielle `build-318`.
 QEMU a démarré depuis l'ISO avec 4 vCPU, 1 Gio de RAM, VGA standard et AC97.
